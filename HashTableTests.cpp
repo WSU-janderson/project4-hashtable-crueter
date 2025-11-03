@@ -16,20 +16,20 @@
 
 #ifdef RUN_TESTS
 
-#include <iostream>
-#include <vector>
 #include <algorithm>
-#include <type_traits>
+#include <iostream>
 #include <optional>
 #include <string>
+#include <type_traits>
+#include <vector>
 
 using namespace std;
 
 // -----------------------------------------------------------------------------
 // Configure key/value type aliases here for testing
 // -----------------------------------------------------------------------------
-using key_type = std::string;   // or int, size_t, double
-using value_type = size_t;      // or std::string, int, double
+using key_type = std::string; // or int, size_t, double
+using value_type = size_t;    // or std::string, int, double
 
 // -----------------------------------------------------------------------------
 // Implementation include
@@ -50,7 +50,7 @@ using HashTable = HashTable_t<key_type, value_type>;
 // -----------------------------------------------------------------------------
 template<typename KeyType, typename IndexType>
 inline KeyType make_key(IndexType i)
-requires std::is_integral_v<IndexType>
+    requires std::is_integral_v<IndexType>
 {
     if constexpr (std::is_same_v<KeyType, std::string>)
         return std::string(1, static_cast<char>('A' + static_cast<unsigned>(i) % 26));
@@ -60,7 +60,7 @@ requires std::is_integral_v<IndexType>
 
 template<typename ValueType, typename IndexType>
 inline ValueType make_value(IndexType i)
-requires std::is_integral_v<IndexType>
+    requires std::is_integral_v<IndexType>
 {
     if constexpr (std::is_same_v<ValueType, std::string>)
         return std::string(1, static_cast<char>('A' + static_cast<unsigned>(i) % 26));
@@ -81,7 +81,10 @@ const string evalName{""};
 #endif
 
 // Intentionally matches legacy behavior: prints ht1 regardless of argument
-#define HT_PRINT(ht) OUTSTREAM << "HashTable contents" << endl; OUTSTREAM << "------------------" << endl; OUTSTREAM << ht1 << endl;
+#define HT_PRINT(ht) \
+    OUTSTREAM << "HashTable contents" << endl; \
+    OUTSTREAM << "------------------" << endl; \
+    OUTSTREAM << ht1 << endl;
 
 #define HT_INSERT
 #define HT_INSERT_DUPLICATE
@@ -106,7 +109,8 @@ const string evalName{""};
 // -----------------------------------------------------------------------------
 // Main
 // -----------------------------------------------------------------------------
-int main(int, char**) {
+int main(int, char**)
+{
     constexpr size_t MAXHASH = 8;
 
 #ifdef GRADING
@@ -132,7 +136,7 @@ int main(int, char**) {
         HashTable ht1;
         bool ok = true;
 
-        OUTSTREAM << "Step 1: Insert first half (" << MAXHASH/2 << ") entries..." << endl;
+        OUTSTREAM << "Step 1: Insert first half (" << MAXHASH / 2 << ") entries..." << endl;
         for (size_t i = 1; i <= MAXHASH / 2; i++) {
             auto k = make_key<key_type>(i);
             auto v = make_value<value_type>(i);
@@ -149,8 +153,8 @@ int main(int, char**) {
 #endif
 
         OUTSTREAM << "Step 2: Insert additional entries to reach initial capacity..." << endl;
-        for (size_t i = (MAXHASH/2)+1; i <= MAXHASH; i++) {
-            auto k = make_key<key_type>(i + 10);         // offset to vary keys
+        for (size_t i = (MAXHASH / 2) + 1; i <= MAXHASH; i++) {
+            auto k = make_key<key_type>(i + 10); // offset to vary keys
             auto v = make_value<value_type>(i + 10);
             bool r = ht1.insert(k, v);
             OUTSTREAM << "  insert(" << k << ", " << v << ") -> " << (r ? "true" : "false") << endl;
@@ -164,7 +168,10 @@ int main(int, char**) {
         OUTSTREAM << endl;
 #endif
 
-        OUTSTREAM << (ok ? "SUCCESS: All planned inserts completed." : "FAILURE: One or more inserts failed.") << endl << endl;
+        OUTSTREAM << (ok ? "SUCCESS: All planned inserts completed."
+                         : "FAILURE: One or more inserts failed.")
+                  << endl
+                  << endl;
 
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
@@ -181,19 +188,21 @@ int main(int, char**) {
 #ifdef HT_INSERT_DUPLICATE
     try {
         HashTable ht1;
-        OUTSTREAM << "Filling with " << (MAXHASH/2) << " unique entries..." << endl;
+        OUTSTREAM << "Filling with " << (MAXHASH / 2) << " unique entries..." << endl;
         for (size_t i = 1; i <= MAXHASH / 2; i++) {
             bool r = ht1.insert(make_key<key_type>(i), make_value<value_type>(i));
             OUTSTREAM << "  insert(" << make_key<key_type>(i) << ", " << make_value<value_type>(i)
                       << ") -> " << (r ? "true" : "false") << endl;
         }
-        auto dupKey = make_key<key_type>(MAXHASH/3);
-        auto dupVal = make_value<value_type>(MAXHASH/3);
-        OUTSTREAM << "Attempting duplicate insert of <" << dupKey << ", " << dupVal << ">..." << endl;
+        auto dupKey = make_key<key_type>(MAXHASH / 3);
+        auto dupVal = make_value<value_type>(MAXHASH / 3);
+        OUTSTREAM << "Attempting duplicate insert of <" << dupKey << ", " << dupVal << ">..."
+                  << endl;
         bool duplicateResult = ht1.insert(dupKey, dupVal);
         OUTSTREAM << (duplicateResult ? "FAILURE: duplicate was inserted (should be rejected)."
                                       : "SUCCESS: duplicate correctly rejected.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -231,7 +240,8 @@ int main(int, char**) {
 
         OUTSTREAM << (ok ? "SUCCESS: Inserts succeeded when table was full (resize/handling OK)."
                          : "FAILURE: Some inserts failed when table was full.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -263,7 +273,8 @@ int main(int, char**) {
         }
         OUTSTREAM << (ok ? "SUCCESS: All removals reported success."
                          : "FAILURE: One or more removals failed.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -288,7 +299,8 @@ int main(int, char**) {
         bool r = ht1.remove(missKey);
         OUTSTREAM << (!r ? "SUCCESS: Missing key correctly not removed."
                          : "FAILURE: remove() returned true for missing key.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -316,7 +328,7 @@ int main(int, char**) {
             OUTSTREAM << "  remove(" << k << ") -> " << (r ? "true" : "false") << endl;
         }
 
-        OUTSTREAM << "Inserting " << (MAXHASH/2) << " new entries after removals..." << endl;
+        OUTSTREAM << "Inserting " << (MAXHASH / 2) << " new entries after removals..." << endl;
         for (size_t i = MAXHASH + 1; i <= MAXHASH + (MAXHASH / 2); i++) {
             bool r = ht1.insert(make_key<key_type>(i), make_value<value_type>(i));
             OUTSTREAM << "  insert(" << make_key<key_type>(i) << ", " << make_value<value_type>(i)
@@ -327,12 +339,14 @@ int main(int, char**) {
         OUTSTREAM << "Verifying reinserted entries are present..." << endl;
         for (size_t i = MAXHASH + 1; i <= MAXHASH + (MAXHASH / 2); i++) {
             bool found = ht1.contains(make_key<key_type>(i));
-            OUTSTREAM << "  contains(" << make_key<key_type>(i) << ") -> " << (found ? "true" : "false") << endl;
+            OUTSTREAM << "  contains(" << make_key<key_type>(i) << ") -> "
+                      << (found ? "true" : "false") << endl;
             ok &= found;
         }
         OUTSTREAM << (ok ? "SUCCESS: All reinserted entries found."
                          : "FAILURE: Missing entries after reinsertion.")
-                  << endl << endl;
+                  << endl
+                  << endl;
 
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
@@ -363,7 +377,8 @@ int main(int, char**) {
         }
         OUTSTREAM << (ok ? "SUCCESS: contains() true for all inserted keys."
                          : "FAILURE: contains() false for some inserted keys.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -387,7 +402,8 @@ int main(int, char**) {
         bool found = ht1.contains(missKey);
         OUTSTREAM << (found ? "FAILURE: contains() true for missing key."
                             : "SUCCESS: contains() false for missing key.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -414,7 +430,8 @@ int main(int, char**) {
         bool found = ht1.contains(remKey);
         OUTSTREAM << (!found ? "SUCCESS: contains() false after removal."
                              : "FAILURE: contains() true after removal.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -441,7 +458,10 @@ int main(int, char**) {
             OUTSTREAM << "SUCCESS: get() returned expected value." << endl << endl;
         } else {
             OUTSTREAM << "FAILURE: get() returned ";
-            if (res) OUTSTREAM << *res; else OUTSTREAM << "nullopt";
+            if (res)
+                OUTSTREAM << *res;
+            else
+                OUTSTREAM << "nullopt";
             OUTSTREAM << ", expected " << make_value<value_type>(MAXHASH / 2) << endl << endl;
         }
     } catch (exception& e) {
@@ -468,7 +488,8 @@ int main(int, char**) {
         std::optional<value_type> res = ht1.get(missKey);
         OUTSTREAM << (!res ? "SUCCESS: get() returned nullopt for missing key."
                            : "FAILURE: get() returned a value for missing key.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -494,7 +515,8 @@ int main(int, char**) {
         std::optional<value_type> res = ht1.get(remKey);
         OUTSTREAM << (!res ? "SUCCESS: get() returned nullopt after removal."
                            : "FAILURE: get() still returned a value after removal.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -526,7 +548,8 @@ int main(int, char**) {
         bool ok = (res && *res == make_value<value_type>(MAXHASH - 1));
         OUTSTREAM << (ok ? "SUCCESS: get() found expected value after removals."
                          : "FAILURE: get() did not return expected value after removals.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -552,7 +575,8 @@ int main(int, char**) {
         bool ok = (v == make_value<value_type>(MAXHASH - 1));
         OUTSTREAM << (ok ? "SUCCESS: operator[] read returned expected value."
                          : "FAILURE: operator[] read returned unexpected value.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -582,7 +606,8 @@ int main(int, char**) {
         bool ok = (v2 == newVal);
         OUTSTREAM << (ok ? "SUCCESS: operator[] updated value correctly."
                          : "FAILURE: operator[] update not reflected in table.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -608,12 +633,14 @@ int main(int, char**) {
         for (size_t i = 1; i <= MAXHASH; i++) {
             auto k = make_key<key_type>(i);
             bool present = (std::find(keys.begin(), keys.end(), k) != keys.end());
-            OUTSTREAM << "  find(" << k << ") in keys -> " << (present ? "found" : "NOT found") << endl;
+            OUTSTREAM << "  find(" << k << ") in keys -> " << (present ? "found" : "NOT found")
+                      << endl;
             allPresent &= present;
         }
         OUTSTREAM << (allPresent ? "SUCCESS: keys() returned all inserted keys."
                                  : "FAILURE: keys() missing one or more keys.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -632,14 +659,17 @@ int main(int, char**) {
         double a0 = ht1.alpha();
         OUTSTREAM << "Initial alpha() = " << a0 << endl;
 
-        OUTSTREAM << "Inserting " << (MAXHASH/2) << " entries..." << endl;
+        OUTSTREAM << "Inserting " << (MAXHASH / 2) << " entries..." << endl;
         for (size_t i = 1; i <= MAXHASH / 2; i++)
             ht1.insert(make_key<key_type>(i), make_value<value_type>(i));
 
         double a = ht1.alpha();
         OUTSTREAM << "alpha() after inserts = " << a << endl;
-        OUTSTREAM << "NOTE: Expected approx " << (static_cast<double>(MAXHASH/2) / MAXHASH) << " (implementation dependent)." << endl;
-        OUTSTREAM << "SUCCESS: alpha() returned a value (manual inspection for exact expectation)." << endl << endl;
+        OUTSTREAM << "NOTE: Expected approx " << (static_cast<double>(MAXHASH / 2) / MAXHASH)
+                  << " (implementation dependent)." << endl;
+        OUTSTREAM << "SUCCESS: alpha() returned a value (manual inspection for exact expectation)."
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -655,17 +685,21 @@ int main(int, char**) {
 #ifdef HT_CAPACITY
     try {
         HashTable ht1;
-        OUTSTREAM << "Inserting " << (MAXHASH/2) << " entries..." << endl;
+        OUTSTREAM << "Inserting " << (MAXHASH / 2) << " entries..." << endl;
         for (size_t i = 1; i <= MAXHASH / 2; i++)
             ht1.insert(make_key<key_type>(i), make_value<value_type>(i));
 
         OUTSTREAM << "Capacity reported: " << ht1.capacity() << endl;
-        OUTSTREAM << "Adding more inserts to trigger capacity change (implementation dependent)..." << endl;
-        for (size_t i = (MAXHASH/2)+1; i <= (MAXHASH*2) - 1; i++)
+        OUTSTREAM << "Adding more inserts to trigger capacity change (implementation dependent)..."
+                  << endl;
+        for (size_t i = (MAXHASH / 2) + 1; i <= (MAXHASH * 2) - 1; i++)
             ht1.insert(make_key<key_type>(i), make_value<value_type>(i));
 
         OUTSTREAM << "New capacity reported: " << ht1.capacity() << endl;
-        OUTSTREAM << "SUCCESS: capacity() reported values (manual inspection for exact expectation)." << endl << endl;
+        OUTSTREAM
+            << "SUCCESS: capacity() reported values (manual inspection for exact expectation)."
+            << endl
+            << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
@@ -690,7 +724,9 @@ int main(int, char**) {
             OUTSTREAM << "  size() = " << s << " (after i=" << i << ")" << endl;
             ok &= (s == i);
         }
-        OUTSTREAM << (ok ? "SUCCESS: size() matched after initial inserts." : "FAILURE: size() mismatch after inserts.") << endl;
+        OUTSTREAM << (ok ? "SUCCESS: size() matched after initial inserts."
+                         : "FAILURE: size() mismatch after inserts.")
+                  << endl;
 
         OUTSTREAM << "Continuing inserts up to nearly 2*MAXHASH..." << endl;
         for (size_t i = MAXHASH + 1; i <= (MAXHASH * 2) - 1; i++) {
@@ -701,7 +737,8 @@ int main(int, char**) {
         }
         OUTSTREAM << (ok ? "SUCCESS: size() matched through extended inserts."
                          : "FAILURE: size() mismatch during extended inserts.")
-                  << endl << endl;
+                  << endl
+                  << endl;
     } catch (exception& e) {
         OUTSTREAM << "Exception: " << e.what() << endl << endl;
     }
